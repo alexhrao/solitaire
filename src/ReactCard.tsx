@@ -13,7 +13,8 @@ import {
 } from './cardRenderers';
 
 import './ReactCard.css';
-interface CardProps extends Card {
+interface CardProps {
+    card: Card;
     onClick: (card: Card) => void;
 };
 
@@ -31,33 +32,27 @@ export default class ReactCard extends Component<CardProps, {}, {}> {
     };
 
     public render = (): React.ReactNode => {
-        const { suit, value, isShown, onClick } = this.props;
+        const { card, onClick } = this.props;
         return (
-            <div className="react-card-holder" onClick={() => onClick({ type: 'card', value, suit, isShown })}>
-                {initCard({ suit, value, isShown, type:'card'})}
+            <div className="react-card-holder" onClick={() => onClick(card)}>
+                {initCard(card)}
             </div>
         );
     };
 
     private renderCard = (): void => {
-        const { suit, value, isShown } = this.props;
-        const card: Card = {
-            type: 'card',
-            suit,
-            value,
-            isShown,
-        };
+        const { card } = this.props;
         const ctx = (this.refs.canvas as HTMLCanvasElement).getContext('2d');
         if (ctx !== null) {
             clearCard(ctx);
-            if (!isShown) {
+            if (!card.isShown) {
                 renderBack(ctx);
                 return;
-            } else if (value === -1) {
+            } else if (card.value === -1) {
                 renderSpace(ctx);
                 return;
             }
-            switch (suit) {
+            switch (card.suit) {
                 case Suit.C:
                     renderClubs(ctx);
                     break;

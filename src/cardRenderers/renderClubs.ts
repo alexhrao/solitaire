@@ -20,7 +20,6 @@ const renderClub = (ctx: CanvasRenderingContext2D): void => {
         ctx.lineTo(clubCenterX + clubCenterX / 2, clubCenterY * 2);
         ctx.fill();
     ctx.closePath();
-    ctx.stroke();
 };
 
 const renderClubs = (ctx: CanvasRenderingContext2D): void => {

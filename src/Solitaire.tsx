@@ -172,16 +172,27 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                     selected = this.state.selected;
                     cols = this.state.cols;
                 }
+            } else if (selected.source.type === 'deck') {
+                if (this.canAppend(source, selected.cards[0])) {
+                    source.cards.push(selected.cards[0]);
+                    this.finalizeSelection();
+                    selected = this.state.selected;
+                    cols = this.state.cols;
+                }
+            } else if (selected.source.type === 'suitSource') {
+
             }
         } else if (cardIndex !== undefined) {
             // Set the flag!
             selected.cards = [];
+            console.log("ADDING CARDS");
+            console.log(cardIndex);
             for (let i = cardIndex; i < source.cards.length; ++i) {
+                console.log("CARD ADDED");
                 selected.cards.push(source.cards[i]);
             }
             selected.source = source;
         }
-        console.log(selected);
         this.setState({ selected, cols });
     };
 
@@ -224,9 +235,15 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             deck.dealt.pop();
         } else if (selected.source.type === 'column') {
             // pop for the number of cards we have selected
-            selected.source.cards.forEach(() => {
+            selected.cards.forEach(() => {
                 cols[(selected.source as Column).index].cards.pop();
             });
+            // if there are any cards left, flip the last one
+            if (cols[(selected.source as Column).index].cards.length > 0) {
+                cols[(selected.source as Column).index].cards[
+                    cols[(selected.source as Column).index].cards.length - 1
+                ].isShown = true;
+            }
         } else if (selected.source.type === 'suitSource') {
             sources[selected.source.index].cards.pop();
         }
@@ -238,7 +255,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     public render = (): React.ReactNode => {
         const { deck, cols, sources, selected } = this.state;
         const columns = cols.map(c => {
-            return <ReactColumn key={c.index} column={c} onClick={(index: number) => this.onColumnClick(c, index)} />
+            return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
         return <div>
             <div className="solitaire-deck">

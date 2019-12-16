@@ -12,15 +12,15 @@ interface DeckProps extends Deck {
 const ReactDeck: React.FunctionComponent<DeckProps> = ({ deck, dealt, onDeal, onCardClick }) => {
     let dealer: React.ReactNode = null;
     if (deck.length > 0) {
-        dealer = <ReactCard suit={Suit.S} type='card' value={0} isShown={false} onClick={onDeal} />
+        dealer = <ReactCard card={{suit: Suit.S, type:'card', isShown: false, value: 0 }} onClick={onDeal} />
     } else {
-        dealer = <ReactCard suit={Suit.S} type='card' value={-1} onClick={onDeal} isShown={true} />;
+        dealer = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={onDeal} />;
     }
     let topDealt: React.ReactNode = null;
     if (dealt.length > 0) {
-        topDealt = <ReactCard {...dealt[dealt.length - 1]} onClick={onCardClick} />
+        topDealt = <ReactCard card={dealt[dealt.length - 1]} onClick={onCardClick} />
     } else {
-        topDealt = <ReactCard suit={Suit.S} type='card' value={-1} onClick={() => {}} isShown={true} />;
+        topDealt = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: 0 }} onClick={() => {}} />;
     }
     return (
         <div className="react-deck">
