@@ -1,0 +1,10 @@
+.react-card {
+    border-radius: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+    margin: 5px;
+}
+
+.react-card.no-click {
+    cursor: default;
+}

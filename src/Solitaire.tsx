@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Card, SelectedCard, Column, Deck, SuitSource, Suit } from './interfaces';
 import ReactDeck from './ReactDeck';
+import ReactColumn from './ReactColumn';
+import './Solitaire.css';
 
 function shuffle(cards: Card[]): Card[] {
     let curr = cards.length;
@@ -42,9 +44,13 @@ function createColumns(cards: Card[]): Column[] {
     }
     let ind = 0;
     while (ind++ < 7) {
-        for (let i = ind; i < 7; ++i) {
+        for (let i = ind - 1; i < 7; ++i) {
             cols[i].cards.push(cards.pop()!);
         }
+    }
+    console.log(cols);
+    for (let i = 0; i < 7; ++i) {
+        cols[i].cards[i].isShown = true;
     }
     return cols;
 };
@@ -88,7 +94,6 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 source: undefined,
             },
         };
-        console.log('Hi!');
     };
 
     private draw = (): void => {
@@ -103,7 +108,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             }
         } else {
             // move
-            deck.dealt.push(deck.deck.pop()!);
+            const card: Card = deck.deck.pop()!;
+            card.isShown = true;
+            deck.dealt.push(card);
         }
         selected.cards = [];
         selected.source = undefined;
@@ -153,7 +160,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         let { selected, cols } = this.state;
         if (selected.source !== undefined) {
             // We are trying to append onto our column. Do the checks!
-            if (selected.source.type === 'deck') {
+            if (selected.source.type === 'column') {
                 // check that suit is compatible and number is correct, then engage
                 if (this.canAppend(source, selected.cards[0])) {
                     // We can append! add to our column, then finalize
@@ -174,6 +181,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             }
             selected.source = source;
         }
+        console.log(selected);
         this.setState({ selected, cols });
     };
 
@@ -229,6 +237,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
 
     public render = (): React.ReactNode => {
         const { deck, cols, sources, selected } = this.state;
+        const columns = cols.map(c => {
+            return <ReactColumn key={c.index} column={c} onClick={(index: number) => this.onColumnClick(c, index)} />
+        });
         return <div>
             <div className="solitaire-deck">
                 <ReactDeck
@@ -238,6 +249,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                     onDeal={this.draw}
                     onCardClick={this.onDeckClick}
                 />
+            </div>
+            <div className="solitaire-cols">
+                {columns}
             </div>
         </div>;
     };

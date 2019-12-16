@@ -1,0 +1,4 @@
+.solitaire-cols {
+    display: flex;
+    flex-direction: row;
+}

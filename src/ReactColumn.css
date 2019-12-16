@@ -1,0 +1,9 @@
+.react-column .react-card-holder .react-card {
+    margin-top: 0px;
+    margin-bottom: -190px;
+}
+
+.react-column .react-card-holder:last-child .react-card {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
