@@ -2,7 +2,7 @@ import React from 'react';
 import { Deck, Suit } from './interfaces';
 import ReactCard from './card/ReactCard';
 import SelectedContext from './SelectedContext';
-import './ReactDeck.css';
+import './Deck.css';
 
 interface DeckProps extends Deck {
     onDeal: () => void;

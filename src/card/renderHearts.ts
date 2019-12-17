@@ -1,6 +1,4 @@
-import { Card } from '../interfaces';
 import cfg from './cardConfig';
-import renderText from './renderText';
 
 const renderHeart = (ctx: CanvasRenderingContext2D): void => {
     const topCurveHeight = cfg.iconHeight * 0.3;

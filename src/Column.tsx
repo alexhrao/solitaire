@@ -3,7 +3,7 @@ import { Column, Card, Suit } from './interfaces';
 import ReactCard from './card/ReactCard';
 import SelectedContext from './SelectedContext';
 
-import './ReactColumn.css';
+import './Column.css';
 
 interface ColProps {
     column: Column;
