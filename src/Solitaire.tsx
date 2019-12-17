@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Card, SelectedCard, Column, Deck, SuitSource, Suit } from './interfaces';
-import ReactDeck from './ReactDeck';
-import ReactColumn from './ReactColumn';
-import ReactSuitSource from './ReactSuitSource';
+import ReactDeck from './Deck';
+import ReactColumn from './Column';
+import ReactSuitSource from './SuitSource';
 import SelectedContext from './SelectedContext';
 import './Solitaire.css';
 
