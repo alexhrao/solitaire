@@ -50,7 +50,6 @@ function createColumns(cards: Card[]): Column[] {
             cols[i].cards.push(cards.pop()!);
         }
     }
-    console.log(cols);
     for (let i = 0; i < 7; ++i) {
         cols[i].cards[i].isShown = true;
     }

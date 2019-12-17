@@ -33,8 +33,6 @@ const ReactColumn: React.FunctionComponent<ColProps> = ({ column, onClick }) => 
 const createHandler = (cards: Card[], onClick: (index?: number) => void): (card: Card) => void => {
     return (card: Card): void => {
         const ind = cards.findIndex(c => c.value === card.value && c.suit === card.suit);
-        console.log("trying to find card:");
-        console.log(card);
         if (ind === -1) {
             onClick(undefined);
         } else {
