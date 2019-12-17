@@ -1,5 +1,5 @@
 import React from 'react';
-import { SuitSource, Card, Suit } from './interfaces';
+import { SuitSource, Suit } from './interfaces';
 import ReactCard from './ReactCard';
 import SelectedContext from './SelectedContext';
 

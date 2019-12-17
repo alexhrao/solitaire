@@ -57,12 +57,17 @@ function createColumns(cards: Card[]): Column[] {
     return cols;
 };
 
-interface SolitaireState {
-    deck: Deck,
-    cols: Column[],
-    sources: SuitSource[],
-    selected: SelectedCard,
+interface GameState {
+    deck: Deck;
+    cols: Column[];
+    sources: SuitSource[];
 };
+
+interface SolitaireState extends GameState {
+    selected: SelectedCard;
+};
+
+const history: GameState[] = [];
 
 export default class Solitaire extends Component<{}, SolitaireState> {
     public constructor(props: {}) {
@@ -145,6 +150,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                     selected = this.state.selected;
                     sources = this.state.sources;
                     source.cards.push(card);
+                } else {
+                    selected.source = undefined;
+                    selected.cards = [];
                 }
             }
         } else {
@@ -185,15 +193,17 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                     cols = this.state.cols;
                 }
             } else if (selected.source.type === 'suitSource') {
-
+                if (this.canAppend(source, selected.cards[0])) {
+                    source.cards.push(selected.cards[0]);
+                    this.finalizeSelection();
+                    selected = this.state.selected;
+                    cols = this.state.cols;
+                }
             }
         } else if (cardIndex !== undefined) {
             // Set the flag!
             selected.cards = [];
-            console.log("ADDING CARDS");
-            console.log(cardIndex);
             for (let i = cardIndex; i < source.cards.length; ++i) {
-                console.log("CARD ADDED");
                 selected.cards.push(source.cards[i]);
             }
             selected.source = source;
@@ -223,7 +233,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         } else if (target.type === 'suitSource') {
             // same suit, increment number
             if (target.cards.length === 0) {
-                return true;
+                return check.value === 1;
             }
             const card = target.cards[target.cards.length - 1];
             return check.suit === card.suit && check.value === card.value + 1;
@@ -236,6 +246,11 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         if (selected.source === undefined) {
             return;
         }
+        history.push({
+            deck: {...deck},
+            sources: [...sources],
+            cols: [...cols],
+        });
         if (selected.source.type === 'deck') {
             deck.dealt.pop();
         } else if (selected.source.type === 'column') {
