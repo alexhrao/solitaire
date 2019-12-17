@@ -16,6 +16,7 @@ import './ReactCard.css';
 interface CardProps {
     card: Card;
     onClick: (card: Card) => void;
+    isSelected?: boolean;
 };
 
 export default class ReactCard extends Component<CardProps, {}, {}> {
@@ -41,10 +42,10 @@ export default class ReactCard extends Component<CardProps, {}, {}> {
     };
 
     private renderCard = (): void => {
-        const { card } = this.props;
+        const { card, isSelected } = this.props;
         const ctx = (this.refs.canvas as HTMLCanvasElement).getContext('2d');
         if (ctx !== null) {
-            clearCard(ctx);
+            clearCard(ctx, isSelected);
             if (!card.isShown) {
                 renderBack(ctx);
                 return;

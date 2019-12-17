@@ -4,3 +4,7 @@
     margin-top: 10px;
     margin-left: 50px;
 }
+
+.react-deck .deck-dealer .react-card {
+    cursor: pointer;
+}

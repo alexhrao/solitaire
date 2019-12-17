@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Card, SelectedCard, Column, Deck, SuitSource, Suit } from './interfaces';
 import ReactDeck from './ReactDeck';
 import ReactColumn from './ReactColumn';
+import ReactSuitSource from './ReactSuitSource';
+import SelectedContext from './SelectedContext';
 import './Solitaire.css';
 
 function shuffle(cards: Card[]): Card[] {
@@ -67,7 +69,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         super(props);
 
         // Create cards, deal, set up deck, etc.
-        const cards = shuffle(createCards());
+        const cards = shuffle(shuffle(createCards()));
         // Create columns. This should edit our cards array accordingly
         const cols = createColumns(cards);
         // Create deck
@@ -171,6 +173,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                     // refresh our view of who is selected and who the sources are!
                     selected = this.state.selected;
                     cols = this.state.cols;
+                } else {
+                    selected.cards = [];
+                    selected.source = undefined;
                 }
             } else if (selected.source.type === 'deck') {
                 if (this.canAppend(source, selected.cards[0])) {
@@ -252,24 +257,36 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         this.setState({ selected, deck, sources, cols });
     };
 
-    public render = (): React.ReactNode => {
+    public render = () => {
         const { deck, cols, sources, selected } = this.state;
         const columns = cols.map(c => {
             return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
-        return <div>
-            <div className="solitaire-deck">
-                <ReactDeck
-                    type="deck"
-                    deck={deck.deck}
-                    dealt={deck.dealt}
-                    onDeal={this.draw}
-                    onCardClick={this.onDeckClick}
-                />
-            </div>
-            <div className="solitaire-cols">
-                {columns}
-            </div>
-        </div>;
+        const srcs = sources.map(s => {
+            return <ReactSuitSource source={s} onClick={this.onSuitClick} />;
+        });
+        return (
+            <SelectedContext.Provider value={selected.cards}>
+                <div>
+                    <div className="solitaire-header">
+                        <div className="solitaire-deck">
+                            <ReactDeck
+                                type="deck"
+                                deck={deck.deck}
+                                dealt={deck.dealt}
+                                onDeal={this.draw}
+                                onCardClick={this.onDeckClick}
+                            />
+                        </div>
+                        <div className="solitaire-sources">
+                            {srcs}
+                        </div>
+                    </div>
+                    <div className="solitaire-cols">
+                        {columns}
+                    </div>
+                </div>
+            </SelectedContext.Provider>
+        );
     };
 };

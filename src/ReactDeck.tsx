@@ -1,7 +1,7 @@
 import React from 'react';
 import { Deck, Suit } from './interfaces';
 import ReactCard from './ReactCard';
-
+import SelectedContext from './SelectedContext';
 import './ReactDeck.css';
 
 interface DeckProps extends Deck {
@@ -18,9 +18,20 @@ const ReactDeck: React.FunctionComponent<DeckProps> = ({ deck, dealt, onDeal, on
     }
     let topDealt: React.ReactNode = null;
     if (dealt.length > 0) {
-        topDealt = <ReactCard card={dealt[dealt.length - 1]} onClick={onCardClick} />
+        topDealt = <SelectedContext.Consumer>
+            { selected => {
+                const card = dealt[dealt.length - 1];
+                const isSelected = (
+                    selected.length === 1
+                    && card.suit === selected[0].suit
+                    && card.value === selected[0].value
+                );
+                return <ReactCard card={card} onClick={onCardClick} isSelected={isSelected} />;
+            }}
+        </SelectedContext.Consumer>
+        
     } else {
-        topDealt = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: 0 }} onClick={() => {}} />;
+        topDealt = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={() => {}} />;
     }
     return (
         <div className="react-deck">

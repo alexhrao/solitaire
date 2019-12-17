@@ -1,8 +1,12 @@
 import cfg from './cardConfig';
 
-const clearCard = (ctx: CanvasRenderingContext2D): void => {
+const clearCard = (ctx: CanvasRenderingContext2D, isSelected?: boolean): void => {
     ctx.clearRect(0, 0, cfg.canvasWidth, cfg.canvasHeight);
-    ctx.fillStyle = cfg.backgroundColor;
+    if (isSelected) {
+        ctx.fillStyle = cfg.selectedColor;
+    } else {
+        ctx.fillStyle = cfg.backgroundColor;
+    }
     ctx.fillRect(0, 0, cfg.canvasWidth, cfg.canvasHeight);
 };
 

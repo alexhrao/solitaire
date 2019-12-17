@@ -1,7 +1,8 @@
 export default {
     canvasWidth: 150,
     canvasHeight: 200,
-    fontStyle: '40px Courier New',
+    fontStyle: '40px Calibri',
+    cornerFontStyle: '20px Calibri',
     offset: 10,
     iconWidth: 15,
     iconHeight: 20,
@@ -11,6 +12,7 @@ export default {
     diamondColor: 'red',
     backColor: 'red',
     backgroundColor: 'white',
+    selectedColor: 'skyblue',
     numBackLines: 30,
     spaceColor: 'darkgray',
 };
