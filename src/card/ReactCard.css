@@ -3,6 +3,7 @@
     border: 1px solid black;
     cursor: pointer;
     margin: 5px;
+    max-width: 10vw;
 }
 
 .react-card.no-click {
