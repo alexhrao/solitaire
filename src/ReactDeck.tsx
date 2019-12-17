@@ -1,6 +1,6 @@
 import React from 'react';
 import { Deck, Suit } from './interfaces';
-import ReactCard from './ReactCard';
+import ReactCard from './card/ReactCard';
 import SelectedContext from './SelectedContext';
 import './ReactDeck.css';
 

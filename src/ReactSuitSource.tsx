@@ -1,6 +1,6 @@
 import React from 'react';
 import { SuitSource, Suit } from './interfaces';
-import ReactCard from './ReactCard';
+import ReactCard from './card/ReactCard';
 import SelectedContext from './SelectedContext';
 
 interface SuitSourceParams {

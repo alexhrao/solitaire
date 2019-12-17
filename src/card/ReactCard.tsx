@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import { Card, Suit } from './interfaces';
-import { 
-    renderHearts,
-    renderClubs,
-    renderDiamonds,
-    renderSpades,
-    renderBack,
-    renderSpace,
-    renderText,
-    clearCard,
-    initCard,
-} from './cardRenderers';
+import { Card, Suit } from '../interfaces';
+import renderHearts from './renderHearts';
+import renderClubs from './renderClubs';
+import renderDiamonds from './renderDiamonds';
+import renderSpades from './renderSpades';
+import renderBack from './renderBack';
+import renderSpace from './renderSpace';
+import renderText from './renderText';
+import clearCard from './clearCard';
+import initCard from './initCard';
 
 import './ReactCard.css';
 interface CardProps {
