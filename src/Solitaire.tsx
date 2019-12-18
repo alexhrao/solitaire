@@ -407,6 +407,13 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                             <div className="solitaire-buttons">
                                 <button
                                     type="button"
+                                    className="solitaire-undo"
+                                    onClick={this.undo}
+                                >
+                                    Undo
+                                </button>
+                                <button
+                                    type="button"
                                     className="solitaire-reset"
                                     onClick={() => {
                                         // check all are done OR ask
@@ -416,13 +423,6 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     }}
                                 >
                                     New Game
-                                </button>
-                                <button
-                                    type="button"
-                                    className="solitaire-undo"
-                                    onClick={this.undo}
-                                >
-                                    Undo
                                 </button>
                             </div>
                         </div>
