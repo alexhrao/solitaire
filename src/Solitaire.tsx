@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookie from 'js-cookie';
 import { Card, SelectedCard, Column, Deck, SuitSource, Suit } from './interfaces';
 import ReactDeck from './Deck';
 import ReactColumn from './Column';
@@ -61,6 +62,11 @@ interface GameState {
     cols: Column[];
     sources: SuitSource[];
 };
+
+interface Stats {
+    moves: number;
+    ticks: number;
+}
 
 interface SolitaireState extends GameState {
     selected: SelectedCard;
@@ -354,7 +360,21 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         });
         let stats: React.ReactNode = null;
         if (this.isFinished()) {
-            stats = <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+            if (Cookie.getJSON('stats') !== undefined) {
+                const statistics: Stats = Cookie.getJSON('stats') as Stats;
+                const pastMoves = statistics.moves < moves ? statistics.moves : moves;
+                const pastTicks = statistics.ticks < ticks ? statistics.ticks : ticks;
+                stats = (
+                    <React.Fragment>
+                        <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+                        <h1>Best: {pastMoves} moves | {new Date(pastTicks * 1000).toISOString().substr(11, 8)} Time</h1>
+                    </React.Fragment>
+                );
+                Cookie.set('stats', { moves: pastMoves, ticks: pastTicks });
+            } else {
+                stats = <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+                Cookie.set('stats', { moves: moves, ticks: ticks });
+            }
             window.clearInterval(ticker);
         } else {
             stats = <React.Fragment>
