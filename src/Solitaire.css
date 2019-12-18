@@ -5,11 +5,11 @@
 
 .solitaire-board {
     background-color: darkolivegreen;
-    min-height: 100vh;
     box-shadow: inset 0px 0px 20px black;
+    height: 100vh;
 }
 
-.solitaire-header {
+.solitaire-dealer {
     display: flex;
     flex-direction: row;
 }
@@ -17,8 +17,10 @@
 .solitaire-sources {
     display: flex;
     flex-direction: row;
-    margin-top: 5px;
     justify-content: center;
+}
+
+.solitaire-source-mat {
     margin-left: auto;
     margin-right: auto;
     padding-left: 10px;
@@ -27,9 +29,58 @@
     border-radius: 5px;
 }
 
-.solitaire-deck {
+.solitaire-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.solitaire-buttons button {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.solitaire-buttons button:first-child {
+    margin-left: 0px;
+}
+
+
+.solitaire-buttons button:last-child {
+    margin-right: 0px;
+}
+
+.solitaire-reset {
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.solitaire-undo {
+    border-radius: 5px;
+    border: none;
+    padding: 5px;
+    width: 100%;
+    cursor: pointer;
+
 }
 
 .solitaire-sources .react-card {
     margin-top: 10px;
+}
+
+.solitaire-stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    color: white;
+}
+.solitaire-stats p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 5px;
+    margin-right: 5px;
 }

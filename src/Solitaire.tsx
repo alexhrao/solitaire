@@ -64,6 +64,9 @@ interface GameState {
 
 interface SolitaireState extends GameState {
     selected: SelectedCard;
+    moves: number;
+    ticks: number;
+    readonly ticker: number;
 };
 
 const history: GameState[] = [];
@@ -99,8 +102,25 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 cards: [],
                 source: undefined,
             },
+            moves: 0,
+            ticks: 0,
+            ticker: window.setInterval(() => {
+                const { ticks } = this.state;
+                this.setState({ ticks: ticks + 1 });
+            }, 1000),
         };
+
     };
+
+    private isFinished = (): boolean => {
+        const { sources } = this.state;
+        return sources.every(src => {
+            return (
+                src.cards.length > 0 &&
+                src.cards[src.cards.length - 1].value === 13
+            );
+        });
+    }
 
     private pushHistory = (): void => {
         const { deck, sources, cols } = this.state;
@@ -134,6 +154,8 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             cols: newCols,
         };
         history.push(game);
+        const { moves } = this.state;
+        this.setState({ moves: moves + 1 });
     };
 
     private undo = (): void => {
@@ -144,6 +166,8 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             selected.source = undefined;
             this.setState({ ...newState, selected });
         }
+        const { moves } = this.state;
+        this.setState({ moves: moves + 1 });
     };
 
     private draw = (): void => {
@@ -316,18 +340,34 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     public render = () => {
-        const { deck, cols, sources, selected } = this.state;
+        const { deck, cols, sources, selected, moves, ticks, ticker } = this.state;
+        const time = new Date(ticks * 1000).toISOString().substr(11, 8);
         //const { deck, sources, cols } = this.state;
         const columns = cols.map(c => {
             return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
         const srcs = sources.map(s => {
-            return <ReactSuitSource source={s} onClick={this.onSuitClick} />;
+            return <ReactSuitSource key={s.index} source={s} onClick={this.onSuitClick} />;
         });
+        let stats: React.ReactNode = null;
+        if (this.isFinished()) {
+            stats = <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+            window.clearInterval(ticker);
+        } else {
+            stats = <React.Fragment>
+                <p>{moves} {moves === 1 ? 'Move' : 'Moves'} Made</p>
+                <p>{time} Time Elapsed</p>
+            </React.Fragment>;
+        }
         return (
             <SelectedContext.Provider value={selected.cards}>
                 <div className="solitaire-board">
                     <div className="solitaire-header">
+                        <div className="solitaire-stats">
+                            {stats}
+                        </div>
+                    </div>
+                    <div className="solitaire-dealer">
                         <div className="solitaire-deck">
                             <ReactDeck
                                 type="deck"
@@ -337,15 +377,31 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 onCardClick={this.onDeckClick}
                             />
                         </div>
-                        <button
-                            type="button"
-                            className="undo"
-                            onClick={this.undo}
-                        >
-                            Undo
-                        </button>
-                        <div className="solitaire-sources">
-                            {srcs}
+                        <div className="solitaire-source-mat">
+                            <div className="solitaire-sources">
+                                {srcs}
+                            </div>
+                            <div className="solitaire-buttons">
+                                <button
+                                    type="button"
+                                    className="solitaire-reset"
+                                    onClick={() => {
+                                        // check all are done OR ask
+                                        if (this.isFinished() || window.confirm('Are you sure you would like to start a new game?')) {
+                                            window.location.reload();
+                                        }
+                                    }}
+                                >
+                                    New Game
+                                </button>
+                                <button
+                                    type="button"
+                                    className="solitaire-undo"
+                                    onClick={this.undo}
+                                >
+                                    Undo
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="solitaire-cols">

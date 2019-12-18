@@ -8,7 +8,6 @@ import './Column.css';
 interface ColProps {
     column: Column;
     onClick: (index?: number) => void;
-
 };
 
 
@@ -21,8 +20,8 @@ const ReactColumn: React.FunctionComponent<ColProps> = ({ column, onClick }) => 
         return <ReactCard key={`${card.suit} ${card.value}`} card={card} onClick={handler} isSelected={isSelected} />;
     }
     const reactCards = cards.length === 0
-        ? [ <ReactCard card={{type: 'card', value: -1, suit: Suit.S, isShown: true}} onClick={handler} /> ]
-        : cards.map(c => <SelectedContext.Consumer>
+        ? [ <ReactCard key="bedrock" card={{type: 'card', value: -1, suit: Suit.S, isShown: true}} onClick={handler} /> ]
+        : cards.map(c => <SelectedContext.Consumer key={`${c.suit} ${c.value}`}>
             {selected => checkSelection(selected, c)}
         </SelectedContext.Consumer>);
     return <div className="react-column">
