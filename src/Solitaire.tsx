@@ -193,7 +193,10 @@ export default class Solitaire extends Component<{}, SolitaireState> {
 
     private onDeckClick = (): void => {
         const { selected, deck } = this.state;
-        if (deck.dealt.length > 0) {
+        if (selected.source) {
+            selected.cards = [];
+            selected.source = undefined;
+        } else if (deck.dealt.length > 0) {
             selected.cards = [ deck.dealt[deck.dealt.length - 1] ];
             selected.source = deck;
         } else {
