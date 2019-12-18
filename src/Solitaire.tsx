@@ -102,6 +102,50 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         };
     };
 
+    private pushHistory = (): void => {
+        const { deck, sources, cols } = this.state;
+        // create deep copies; copy the cards!
+
+        const newDeck: Deck = {
+            dealt: deck.dealt.map(c => {return {...c}}),
+            deck: deck.deck.map(c => {return {...c}}),
+            type: 'deck',
+        };
+        const newSources: SuitSource[] = sources.map(s => {
+            const src: SuitSource = {
+                cards: s.cards.map(c => {return {...c}}),
+                index: s.index,
+                type: 'suitSource',
+            };
+            return src;
+        });
+        const newCols: Column[] = cols.map(col => {
+            const cl: Column = {
+                cards: col.cards.map(c => {return {...c}}),
+                index: col.index,
+                type: 'column',
+            };
+            return cl;
+        })
+
+        const game: GameState = {
+            deck: newDeck,
+            sources: newSources,
+            cols: newCols,
+        };
+        history.push(game);
+    };
+
+    private undo = (): void => {
+        const { selected } = this.state;
+        const newState = history.pop();
+        if (newState) {
+            selected.cards = [];
+            selected.source = undefined;
+            this.setState({ ...newState, selected });
+        }
+    };
+
     private draw = (): void => {
         const { selected, deck } = this.state;
         if (deck.deck.length === 0) {
@@ -136,13 +180,14 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     private onSuitClick = (source: SuitSource): void => {
-        let { selected, sources } = this.state;
+        let { selected, sources} = this.state;
         // if we have selected something, see if we can place into. If we can, then engage?
         if (selected.source !== undefined) {
             // first see if we're only holding one
             if (selected.cards.length === 1) {
                 const card = selected.cards[0];
                 if (this.canAppend(source, card)) {
+                    this.pushHistory();
                     // finalize, then move
                     this.finalizeSelection();
                     // refresh our view of who is selected and who the sources are!
@@ -172,6 +217,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             if (selected.source.type === 'column') {
                 // check that suit is compatible and number is correct, then engage
                 if (this.canAppend(source, selected.cards[0])) {
+                    this.pushHistory();
                     // We can append! add to our column, then finalize
                     selected.cards.forEach(c => {
                         source.cards.push(c);
@@ -186,6 +232,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 }
             } else if (selected.source.type === 'deck') {
                 if (this.canAppend(source, selected.cards[0])) {
+                    this.pushHistory();
                     source.cards.push(selected.cards[0]);
                     this.finalizeSelection();
                     selected = this.state.selected;
@@ -193,6 +240,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 }
             } else if (selected.source.type === 'suitSource') {
                 if (this.canAppend(source, selected.cards[0])) {
+                    this.pushHistory();
                     source.cards.push(selected.cards[0]);
                     this.finalizeSelection();
                     selected = this.state.selected;
@@ -242,14 +290,10 @@ export default class Solitaire extends Component<{}, SolitaireState> {
 
     private finalizeSelection = (): void => {
         const { selected, sources, deck, cols } = this.state;
+        //const { deck, sources, cols } = this.state;
         if (selected.source === undefined) {
             return;
         }
-        history.push({
-            deck: {...deck},
-            sources: [...sources],
-            cols: [...cols],
-        });
         if (selected.source.type === 'deck') {
             deck.dealt.pop();
         } else if (selected.source.type === 'column') {
@@ -273,6 +317,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
 
     public render = () => {
         const { deck, cols, sources, selected } = this.state;
+        //const { deck, sources, cols } = this.state;
         const columns = cols.map(c => {
             return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
@@ -281,7 +326,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         });
         return (
             <SelectedContext.Provider value={selected.cards}>
-                <div>
+                <div className="solitaire-board">
                     <div className="solitaire-header">
                         <div className="solitaire-deck">
                             <ReactDeck
@@ -292,6 +337,13 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 onCardClick={this.onDeckClick}
                             />
                         </div>
+                        <button
+                            type="button"
+                            className="undo"
+                            onClick={this.undo}
+                        >
+                            Undo
+                        </button>
                         <div className="solitaire-sources">
                             {srcs}
                         </div>

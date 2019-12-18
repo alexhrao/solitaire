@@ -3,6 +3,12 @@
     flex-direction: row;
 }
 
+.solitaire-board {
+    background-color: darkolivegreen;
+    min-height: 100vh;
+    box-shadow: inset 0px 0px 20px black;
+}
+
 .solitaire-header {
     display: flex;
     flex-direction: row;
@@ -13,7 +19,15 @@
     flex-direction: row;
     margin-top: 5px;
     justify-content: center;
-    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.solitaire-deck {
 }
 
 .solitaire-sources .react-card {

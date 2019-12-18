@@ -1,11 +1,11 @@
 export default {
     canvasWidth: 150,
     canvasHeight: 200,
-    fontStyle: '40px Calibri',
-    cornerFontStyle: '20px Calibri',
+    fontStyle: '50px Calibri',
+    cornerFontStyle: '30px Calibri',
     offset: 10,
-    iconWidth: 15,
-    iconHeight: 20,
+    iconWidth: 20,
+    iconHeight: 25,
     spadeColor: 'black',
     clubColor: 'black',
     heartColor: 'red',
@@ -13,6 +13,6 @@ export default {
     backColor: 'red',
     backgroundColor: 'white',
     selectedColor: 'skyblue',
-    numBackLines: 30,
+    numBackLines: 40,
     spaceColor: 'darkgray',
 };
