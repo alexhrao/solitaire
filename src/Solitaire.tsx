@@ -73,7 +73,9 @@ interface SolitaireState extends GameState {
     cardsPerDeal: number;
     moves: number;
     ticks: number;
+    stats: React.ReactNode;
     readonly ticker: number;
+    moveInd: number;
 };
 
 const history: GameState[] = [];
@@ -110,12 +112,14 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 source: undefined,
             },
             cardsPerDeal: 1,
+            stats: null,
             moves: 0,
             ticks: 0,
             ticker: window.setInterval(() => {
                 const { ticks } = this.state;
                 this.setState({ ticks: ticks + 1 });
             }, 1000),
+            moveInd: -1,
         };
     };
 
@@ -127,7 +131,59 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 src.cards[src.cards.length - 1].value === 13
             );
         });
+    };
+
+    private finishGame = (): void => {
+        const { moves, ticks, moveInd, ticker } = this.state;
+        if (!this.isFinished() || moveInd >= 0) {
+            return;
+        }
+
+        const time = new Date(ticks * 1000).toISOString().substr(11, 8);
+
+        let stats: React.ReactNode = null;
+        // update statistics
+        if (Cookie.getJSON('stats') !== undefined) {
+            const statistics: Stats = Cookie.getJSON('stats') as Stats;
+            const pastMoves = statistics.moves < moves ? statistics.moves : moves;
+            const pastTicks = statistics.ticks < ticks ? statistics.ticks : ticks;
+            stats = (
+                <React.Fragment>
+                    <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+                    <h1>Best: {pastMoves} moves | {new Date(pastTicks * 1000).toISOString().substr(11, 8)} Time</h1>
+                </React.Fragment>
+            );
+            Cookie.set('stats', { moves: pastMoves, ticks: pastTicks });
+        } else {
+            stats = <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
+            Cookie.set('stats', { moves: moves, ticks: ticks });
+        }
+        window.clearInterval(ticker);
+        // kick off animation
+        this.handleAnimation();
+        this.setState({ stats });
     }
+
+    private handleAnimation = (): void => {
+        // Get the current index, and move that source. Then, set up the next one
+        const { moveInd } = this.state;
+        const timeout = 3000;
+        if (!this.isFinished() || moveInd > -1) {
+            return;
+        }
+        const mover = (): void => {
+            const { moveInd } = this.state;
+            console.log('IN MOVER');
+            console.log(moveInd);
+            if (moveInd > 51) {
+                return;
+            }
+            this.setState({ moveInd: moveInd + 1 });
+            window.setTimeout(mover, timeout);
+        }
+        this.setState({ moveInd: 0 });
+        window.setTimeout(mover, timeout);
+    };
 
     private pushHistory = (): void => {
         const { deck, sources, cols } = this.state;
@@ -163,6 +219,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         history.push(game);
         const { moves } = this.state;
         this.setState({ moves: moves + 1 });
+        if (this.isFinished()) {
+            this.finishGame();
+        }
     };
 
     private undo = (): void => {
@@ -373,45 +432,35 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     public render = () => {
-        const { deck, cols, sources, selected, cardsPerDeal, moves, ticks, ticker } = this.state;
+        const { deck, cols, sources, selected, cardsPerDeal, moves, ticks, stats, moveInd } = this.state;
         const time = new Date(ticks * 1000).toISOString().substr(11, 8);
         //const { deck, sources, cols } = this.state;
         const columns = cols.map(c => {
             return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
-        const srcs = sources.map(s => {
-            return <ReactSuitSource key={s.index} source={s} onClick={this.onSuitClick} />;
+        const srcs = sources.map((s, i) => {
+            return (
+                <ReactSuitSource
+                    key={s.index}
+                    source={s}
+                    onClick={this.onSuitClick}
+                    moveInd={12 - Math.floor(moveInd / 4)}
+                    currMoveInd={moveInd === -1 ? -1 : moveInd % 4}
+                />
+            );
         });
-        let stats: React.ReactNode = null;
-        if (this.isFinished()) {
-            if (Cookie.getJSON('stats') !== undefined) {
-                const statistics: Stats = Cookie.getJSON('stats') as Stats;
-                const pastMoves = statistics.moves < moves ? statistics.moves : moves;
-                const pastTicks = statistics.ticks < ticks ? statistics.ticks : ticks;
-                stats = (
-                    <React.Fragment>
-                        <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
-                        <h1>Best: {pastMoves} moves | {new Date(pastTicks * 1000).toISOString().substr(11, 8)} Time</h1>
-                    </React.Fragment>
-                );
-                Cookie.set('stats', { moves: pastMoves, ticks: pastTicks });
-            } else {
-                stats = <h1>Congratulations! Finished in {time} time with {moves} moves!</h1>
-                Cookie.set('stats', { moves: moves, ticks: ticks });
-            }
-            window.clearInterval(ticker);
-        } else {
-            stats = <React.Fragment>
-                <p>{moves} {moves === 1 ? 'Move' : 'Moves'} Made</p>
-                <p>{time} Time Elapsed</p>
-            </React.Fragment>;
-        }
+        const currStats = (
+            <React.Fragment>
+            <p>{moves} {moves === 1 ? 'Move' : 'Moves'} Made</p>
+            <p>{time} Time Elapsed</p>
+            </React.Fragment>
+        );
         return (
             <SelectedContext.Provider value={selected.cards}>
                 <div className="solitaire-board">
                     <div className="solitaire-header">
                         <div className="solitaire-stats">
-                            {stats}
+                            {stats === null ? currStats : stats}
                         </div>
                     </div>
                     <div className="solitaire-dealer">
@@ -448,7 +497,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     className="solitaire-reset"
                                     onClick={() => {
                                         // check all are done OR ask
-                                        if (this.isFinished() || window.confirm('Are you sure you would like to start a new game?')) {
+                                        if (
+                                            this.isFinished() ||
+                                            window.confirm('Are you sure you would like to start a new game?')) {
                                             window.location.reload();
                                         }
                                     }}

@@ -1,3 +1,7 @@
+.react-card-holder {
+    position: relative;
+}
+
 .react-card {
     border-radius: 5px;
     border: 1px solid black;
@@ -9,3 +13,27 @@
 .react-card.no-click {
     cursor: default;
 }
+
+.react-card-holder.card-move.react-card-holder.card-move {
+    animation-duration: 3s;
+    animation-name: moveCard;
+    z-index: 1;
+}
+
+.react-card-holder.card-moved {
+    display: none;
+}
+
+@keyframes moveCard {
+    from {
+      top: 0;
+    }
+
+    10% {
+        top: -5vh;
+    }
+  
+    to {
+        top: 100vh;
+    }
+  }

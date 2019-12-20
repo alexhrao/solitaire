@@ -15,6 +15,7 @@ interface CardProps {
     card: Card;
     onClick: (card: Card) => void;
     isSelected?: boolean;
+    moveState?: number;
 };
 
 export default class ReactCard extends Component<CardProps, {}, {}> {
@@ -27,13 +28,13 @@ export default class ReactCard extends Component<CardProps, {}, {}> {
     };
 
     public componentDidUpdate: () => void = () => {
-        this.renderCard();
+        this.renderCard();  
     };
 
     public render = (): React.ReactNode => {
-        const { card, onClick } = this.props;
+        const { card, onClick, moveState } = this.props;
         return (
-            <div className="react-card-holder" onClick={() => onClick(card)}>
+            <div className={`react-card-holder ${moveState === undefined ? '' : (moveState === 0 ? 'card-move' : 'card-moved')}`} onClick={() => onClick(card)}>
                 {initCard(card)}
             </div>
         );

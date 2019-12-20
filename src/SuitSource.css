@@ -1,0 +1,18 @@
+.suit-source-container {
+    position: relative;
+}
+
+.suit-source-container .react-card-holder:first-child {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+.suit-source-container .react-card-holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.suit-source-container .react-card-holder .react-card {
+    position: relative;
+}
