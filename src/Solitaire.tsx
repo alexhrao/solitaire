@@ -219,9 +219,6 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         history.push(game);
         const { moves } = this.state;
         this.setState({ moves: moves + 1 });
-        if (this.isFinished()) {
-            this.finishGame();
-        }
     };
 
     private undo = (): void => {
@@ -319,6 +316,9 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         }
         sources[source.index] = source;
         this.setState({ selected, sources });
+        if (this.isFinished()) {
+            this.finishGame();
+        }
     };
 
     private onColumnClick = (source: Column, cardIndex?: number): void => {
