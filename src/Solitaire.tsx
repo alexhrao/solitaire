@@ -70,6 +70,7 @@ interface Stats {
 
 interface SolitaireState extends GameState {
     selected: SelectedCard;
+    cardsPerDeal: number;
     moves: number;
     ticks: number;
     readonly ticker: number;
@@ -108,6 +109,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 cards: [],
                 source: undefined,
             },
+            cardsPerDeal: 1,
             moves: 0,
             ticks: 0,
             ticker: window.setInterval(() => {
@@ -115,7 +117,6 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 this.setState({ ticks: ticks + 1 });
             }, 1000),
         };
-
     };
 
     private isFinished = (): boolean => {
@@ -177,7 +178,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     private draw = (): void => {
-        const { selected, deck } = this.state;
+        const { selected, deck, cardsPerDeal } = this.state;
         if (deck.deck.length === 0) {
             // reset
             let card: Card|undefined = deck.dealt.pop();
@@ -188,14 +189,32 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             }
         } else {
             // move
-            const card: Card = deck.deck.pop()!;
-            card.isShown = true;
-            deck.dealt.push(card);
+            // if one per draw, just engage
+            if (cardsPerDeal === 1) {
+                const card: Card = deck.deck.pop()!;
+                card.isShown = true;
+                deck.dealt.push(card);
+            } else {
+                // see how many cards we have
+                const cardsToGet = deck.deck.length > 3 ? 3 : deck.deck.length;
+                for (let i = 0; i < cardsToGet; ++i) {
+                    const card: Card = deck.deck.pop()!;
+                    card.isShown = true;
+                    deck.dealt.push(card);
+                }
+            }
         }
         selected.cards = [];
         selected.source = undefined;
         this.setState({ selected, deck });
     };
+
+    private changeDraw = (): void => {
+        const { cardsPerDeal } = this.state;
+        this.setState({
+            cardsPerDeal: cardsPerDeal === 3 ? 1 : 3,
+        });
+    }
 
     private onDeckClick = (): void => {
         const { selected, deck } = this.state;
@@ -282,11 +301,16 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             }
         } else if (cardIndex !== undefined) {
             // Set the flag!
+            // check that the selected card is shown
             selected.cards = [];
-            for (let i = cardIndex; i < source.cards.length; ++i) {
-                selected.cards.push(source.cards[i]);
+            selected.source = undefined;
+            if (source.cards[cardIndex].isShown) {
+                selected.cards = [];
+                for (let i = cardIndex; i < source.cards.length; ++i) {
+                    selected.cards.push(source.cards[i]);
+                }
+                selected.source = source;
             }
-            selected.source = source;
         }
         this.setState({ selected, cols });
     };
@@ -349,7 +373,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     public render = () => {
-        const { deck, cols, sources, selected, moves, ticks, ticker } = this.state;
+        const { deck, cols, sources, selected, cardsPerDeal, moves, ticks, ticker } = this.state;
         const time = new Date(ticks * 1000).toISOString().substr(11, 8);
         //const { deck, sources, cols } = this.state;
         const columns = cols.map(c => {
@@ -399,6 +423,13 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 onDeal={this.draw}
                                 onCardClick={this.onDeckClick}
                             />
+                            <button
+                                type="button"
+                                className="change-deal"
+                                onClick={this.changeDraw}
+                            >
+                                Deal {cardsPerDeal === 3 ? '1' : '3'} per draw
+                            </button>
                         </div>
                         <div className="solitaire-source-mat">
                             <div className="solitaire-sources">

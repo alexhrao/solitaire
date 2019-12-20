@@ -16,9 +16,9 @@ const ReactDeck: React.FunctionComponent<DeckProps> = ({ deck, dealt, onDeal, on
     } else {
         dealer = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={onDeal} />;
     }
-    let topDealt: React.ReactNode = null;
+    let topDealt: React.ReactNode[] = [];
     if (dealt.length > 0) {
-        topDealt = <SelectedContext.Consumer>
+        topDealt = [ <SelectedContext.Consumer>
             { selected => {
                 const card = dealt[dealt.length - 1];
                 const isSelected = (
@@ -28,10 +28,10 @@ const ReactDeck: React.FunctionComponent<DeckProps> = ({ deck, dealt, onDeal, on
                 );
                 return <ReactCard card={card} onClick={onCardClick} isSelected={isSelected} />;
             }}
-        </SelectedContext.Consumer>
+        </SelectedContext.Consumer> ];
         
     } else {
-        topDealt = <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={() => {}} />;
+    topDealt = [ <ReactCard card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={() => {}} /> ];
     }
     return (
         <div className="react-deck">
