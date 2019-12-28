@@ -1,3 +1,7 @@
+button {
+    background-color: white;
+}
+
 .solitaire-cols {
     display: flex;
     flex-direction: row;
