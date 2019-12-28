@@ -7,6 +7,9 @@ import ReactSuitSource from './SuitSource';
 import SelectedContext from './SelectedContext';
 import './Solitaire.css';
 
+const animationTime = 2500;
+const animationDelay = 100;
+
 function shuffle(cards: Card[]): Card[] {
     let curr = cards.length;
     const shuffled: Card[] = [...cards];
@@ -167,22 +170,19 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     private handleAnimation = (): void => {
         // Get the current index, and move that source. Then, set up the next one
         const { moveInd } = this.state;
-        const timeout = 3000;
         if (!this.isFinished() || moveInd > -1) {
             return;
         }
         const mover = (): void => {
             const { moveInd } = this.state;
-            console.log('IN MOVER');
-            console.log(moveInd);
             if (moveInd > 51) {
                 return;
             }
             this.setState({ moveInd: moveInd + 1 });
-            window.setTimeout(mover, timeout);
+            window.setTimeout(mover, moveInd % 4 === 2 ? animationTime : animationDelay);
         }
         this.setState({ moveInd: 0 });
-        window.setTimeout(mover, timeout);
+        window.setTimeout(mover, 0);
     };
 
     private pushHistory = (): void => {
@@ -506,6 +506,35 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 >
                                     New Game
                                 </button>
+                                {
+                                    /* Uncomment for debug game finish
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            [Suit.C, Suit.D, Suit.H, Suit.S].forEach((suit, s) => {
+                                                for (let i = 1; i <= 13; ++i) {
+                                                    sources[s].cards.push({
+                                                        isShown: true,
+                                                        suit: suit,
+                                                        value: i,
+                                                        type: 'card',
+                                                    });
+                                                }
+                                            });
+                                            cols.forEach((_, i) => {
+                                                cols[i].cards = [];
+                                            });
+                                            deck.dealt = [];
+                                            deck.deck = [];
+                                            this.setState({ sources, cols, deck });
+                                            this.finishGame();
+                                        }}
+                                    >
+                                        Finish Game
+                                    </button>
+                                    */
+                                }
+                                
                             </div>
                         </div>
                     </div>

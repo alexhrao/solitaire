@@ -20,10 +20,10 @@ const ReactSuitSource: React.FunctionComponent<SuitSourceProps> = ({ source, onC
             <SelectedContext.Consumer key={`${sc.value} ${sc.suit}`}>
                 {selected => {
                     let moveState: number|undefined = undefined;
-                    if (moveInd < i || (moveInd === i && currMoveInd > source.index)) {
+                    if (moveInd < i) {
                         // we've passed; 1
                         moveState = 1;
-                    } else if (moveInd === i && currMoveInd === source.index) {
+                    } else if (moveInd === i && currMoveInd >= source.index) {
                         // animate!
                         moveState = 0;
                     }
