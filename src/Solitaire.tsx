@@ -181,8 +181,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
             this.setState({ moveInd: moveInd + 1 });
             window.setTimeout(mover, moveInd % 4 === 2 ? animationTime : animationDelay);
         }
-        this.setState({ moveInd: 0 });
-        window.setTimeout(mover, 0);
+        this.setState({ moveInd: 0 }, () => window.setTimeout(mover, animationDelay));
     };
 
     private pushHistory = (): void => {
@@ -434,7 +433,6 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     public render = () => {
         const { deck, cols, sources, selected, cardsPerDeal, moves, ticks, stats, moveInd } = this.state;
         const time = new Date(ticks * 1000).toISOString().substr(11, 8);
-        //const { deck, sources, cols } = this.state;
         const columns = cols.map(c => {
             return <ReactColumn key={c.index} column={c} onClick={(index?: number) => this.onColumnClick(c, index)} />
         });
@@ -508,7 +506,8 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     New Game
                                 </button>
                                 {
-                                    /* Uncomment for debug game finish
+                                    // Uncomment to show debug finisher
+                                    /*
                                     <button
                                         type="button"
                                         onClick={() => {
