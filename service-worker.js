@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/solitaire/precache-manifest.c3e0a22d9dd1b5ad5d5037868492b03c.js"
+  "/solitaire/precache-manifest.7f6e807393b1698700e3b4cbc518f90b.js"
 );
 
 self.addEventListener('message', (event) => {
