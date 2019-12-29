@@ -31,7 +31,7 @@ const ReactDeck: React.FunctionComponent<DeckProps> = ({ deck, dealt, onDeal, on
         </SelectedContext.Consumer> ];
         
     } else {
-        topDealt = [ <ReactCard key={`${Suit.S} -1`} card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={() => {}} /> ];
+        topDealt = [ <div className="placeholder-card"><ReactCard key={`${Suit.S} -1`} card={{suit: Suit.S, type:'card', isShown: true, value: -1 }} onClick={() => {}} /></div> ];
     }
     return (
         <div className="react-deck">

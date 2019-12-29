@@ -7,3 +7,7 @@
 .react-deck .deck-dealer .react-card {
     cursor: pointer;
 }
+
+.placeholder-card {
+    cursor: normal;
+}

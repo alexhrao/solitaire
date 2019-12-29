@@ -23,11 +23,11 @@ export default class ReactCard extends Component<CardProps, {}, {}> {
         super(props);
     };
 
-    public componentDidMount: () => void = () => {
+    public componentDidMount = () => {
         this.renderCard();
     };
 
-    public componentDidUpdate: () => void = () => {
+    public componentDidUpdate = () => {
         this.renderCard();  
     };
 

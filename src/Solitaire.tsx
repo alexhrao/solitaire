@@ -489,6 +489,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     type="button"
                                     className="solitaire-undo"
                                     onClick={this.undo}
+                                    disabled={history.length === 0}
                                 >
                                     Undo
                                 </button>

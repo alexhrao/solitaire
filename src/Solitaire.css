@@ -1,5 +1,7 @@
 button {
     background-color: white;
+    font-size: 2em;
+    padding: 10px;
 }
 
 .solitaire-cols {
@@ -70,6 +72,12 @@ button {
     padding: 5px;
     width: 100%;
     cursor: pointer;
+}
+
+.solitaire-undo:disabled {
+    background-color: white;
+    color: rgb(155, 155, 155);
+    cursor: default;
 }
 
 .change-deal {

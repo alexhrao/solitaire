@@ -34,7 +34,9 @@ const ReactSuitSource: React.FunctionComponent<SuitSourceProps> = ({ source, onC
         );
     });
     return <div className="suit-source-container">
-        {placeHolder}
+        <div className="placeholder-card">
+            {placeHolder}
+        </div>
         {card}
     </div>;
 };
