@@ -234,7 +234,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
     };
 
     private draw = (): void => {
-        const { selected, deck, cardsPerDeal } = this.state;
+        const { selected, deck, cardsPerDeal, moves } = this.state;
         if (deck.deck.length === 0) {
             // reset
             let card: Card|undefined = deck.dealt.pop();
@@ -262,7 +262,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
         }
         selected.cards = [];
         selected.source = undefined;
-        this.setState({ selected, deck });
+        this.setState({ selected, deck, moves: moves + 1 });
     };
 
     private changeDraw = (): void => {
