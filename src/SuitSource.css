@@ -16,7 +16,3 @@
 .suit-source-container .react-card-holder .react-card {
     position: relative;
 }
-
-.placeholder-card * {
-    cursor: default;
-}
