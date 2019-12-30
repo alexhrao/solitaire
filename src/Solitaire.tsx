@@ -7,7 +7,7 @@ import ReactSuitSource from './SuitSource';
 import SelectedContext from './SelectedContext';
 import './Solitaire.css';
 
-const animationTime = 2500;
+const animationTime = 3000;
 const animationDelay = 100;
 
 function shuffle(cards: Card[]): Card[] {
@@ -179,7 +179,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                 return;
             }
             this.setState({ moveInd: moveInd + 1 });
-            window.setTimeout(mover, moveInd % 4 === 2 ? animationTime : animationDelay);
+            window.setTimeout(mover, moveInd % 4 === 2 ? animationTime - (5 * animationDelay) : animationDelay);
         }
         this.setState({ moveInd: 0 }, () => window.setTimeout(mover, animationDelay));
     };
@@ -507,7 +507,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 </button>
                                 {
                                     // Uncomment to show debug finisher
-                                    /*
+
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -532,7 +532,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     >
                                         Finish Game
                                     </button>
-                                    */
+
                                 }
                                 
                             </div>
