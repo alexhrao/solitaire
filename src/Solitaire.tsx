@@ -507,7 +507,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 </button>
                                 {
                                     // Uncomment to show debug finisher
-
+                                    /*
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -532,7 +532,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                     >
                                         Finish Game
                                     </button>
-
+                                    */
                                 }
                                 
                             </div>
