@@ -475,7 +475,7 @@ export default class Solitaire extends Component<{}, SolitaireState> {
                                 className="change-deal"
                                 onClick={this.changeDraw}
                             >
-                                Deal {cardsPerDeal === 3 ? '1' : '3'} per draw
+                                Dealing {cardsPerDeal === 3 ? '1' : '3'} per draw
                             </button>
                         </div>
                         <div className="solitaire-source-mat">
